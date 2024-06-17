@@ -2,24 +2,55 @@
 
 ## Introduction
 
-## Development
+Using the Gemini API to generate a description and title for an image, and saving the title to the alt attribute.
 
-You can develop an add-on in isolation using the boilerplate already provided by the add-on generator.
-The project is configured to have the current add-on installed and ready to work with.
-This is useful to bootstrap an isolated environment that can be used to quickly develop the add-on or for demo purposes.
-It's also useful when testing an add-on in a CI environment.
+## Usage
 
-```{note}
-It's quite similar when you develop a Plone backend add-on in the Python side, and embed a ready to use Plone build (using buildout or pip) in order to develop and test the package.
+Add in your `.env` file of choice a variable:
+
+```
+RAZZLE_GEMINI_API_KEY= "Your Key"
+```
+Get an API key here: [Google](https://ai.google.dev/tutorials/setup)
+
+## Installation
+
+To install your project, you must choose the method appropriate to your version of Volto.
+
+### Volto 17 and earlier
+
+Create a new Volto project (you can skip this step if you already have one):
+
+```
+npm install -g yo @plone/generator-volto
+yo @plone/volto my-volto-project --addon @danielnabil/volto-gemini-alt-text
+cd my-volto-project
 ```
 
-The dockerized approach performs all these actions in a custom built docker environment:
+Add `@danielnabil/volto-gemini-alt-text`to your package.json:
 
-1. Generates a vanilla project using the official Volto Yo Generator (@plone/generator-volto)
-2. Configures it to use the add-on with the name stated in the `package.json`
-3. Links the root of the add-on inside the created project
+```JSON
+"addons": [
+    "@danielnabil/volto-gemini-alt-text"
+],
 
-After that you can use the inner dockerized project, and run any standard Volto command for linting, acceptance test or unit tests using Makefile commands provided for your convenience.
+"dependencies": {
+    "@danielnabil/volto-gemini-alt-text": "*"
+}
+```
+
+Download and install the new add-on by running:
+
+
+```
+yarn install
+```
+
+Start Volto with:
+
+```
+yarn start
+```
 
 ### Setup the environment
 
@@ -148,3 +179,5 @@ Run
 ```shell
 make release-rc
 ```
+## License
+
