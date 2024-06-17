@@ -281,11 +281,7 @@ class Edit extends Component {
     const { data } = this.props;
     const placeholder =
       this.props.data.placeholder ||
-      this.props.intl.formatMessage(messages.ImageBlockInputPlaceholder);
-    const {description, title}=this.state
-    // data.alt = title
-    // console.log(data)
-    
+      this.props.intl.formatMessage(messages.ImageBlockInputPlaceholder); 
 
     return (
       <div
@@ -297,9 +293,6 @@ class Edit extends Component {
           data.align,
         )}
       >
-        {title && <h2>{title}</h2>}
-        {description && <p> {description}</p>}
-        
         {data.url ? (
           <Image
             className={cx({
