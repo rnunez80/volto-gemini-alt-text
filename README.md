@@ -23,19 +23,19 @@ Create a new Volto project (you can skip this step if you already have one):
 
 ```
 npm install -g yo @plone/generator-volto
-yo @plone/volto my-volto-project --addon @danielnabil/volto-gemini-alt-text
+yo @plone/volto my-volto-project --addon volto-gemini-alt-text
 cd my-volto-project
 ```
 
-Add `@danielnabil/volto-gemini-alt-text`to your package.json:
+Add `volto-gemini-alt-text`to your package.json:
 
 ```JSON
 "addons": [
-    "@danielnabil/volto-gemini-alt-text"
+    "volto-gemini-alt-text"
 ],
 
 "dependencies": {
-    "@danielnabil/volto-gemini-alt-text": "*"
+    "volto-gemini-alt-text": "*"
 }
 ```
 
