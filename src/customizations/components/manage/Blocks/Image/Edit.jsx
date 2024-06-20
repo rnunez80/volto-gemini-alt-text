@@ -41,7 +41,7 @@ const messages = defineMessages({
   },
   uploadingImage: {
     id: 'Uploading image',
-    defaultMessage: 'Uploading image',
+    defaultMessage: 'Uploading image and Generating description',
   },
 });
 const describer = new  describeImage()

@@ -24,7 +24,7 @@ class describeImage {
               type: "text",
           text: `Respond only in valid JSON. The JSON object you return should match the following schema return it as a text only:
                 {title: "string", description "string" }
-                Where title of the photo to be in it's alt and no more than 5 words and decription of the photo in one sentence`
+                Where title of the photo to be in it's alt and between 30-60 characters and description of the photo between 50 to 160 characters`
             },
             {
               type: "image_url",
