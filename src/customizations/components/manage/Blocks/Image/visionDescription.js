@@ -1,6 +1,8 @@
 
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { HumanMessage } from "@langchain/core/messages";
+import Resizer from "react-image-file-resizer";
+
 class describeImage {
   constructor() {
     this.vision = new ChatGoogleGenerativeAI({
@@ -17,6 +19,8 @@ class describeImage {
    */
   async processImage(image) {
     try {
+     const compimage = await this.resizeFile(image);
+     const base64String = compimage.split(',')[1];
       const input = [
         new HumanMessage({
           content: [
@@ -28,14 +32,14 @@ class describeImage {
             },
             {
               type: "image_url",
-              image_url: `data:image/png;base64,${image}`,
+              image_url: `data:image/png;base64,${base64String}`,
             },
           ],
         }),
       ];
 
       const response = await this.vision.invoke(input);
-      const result=this.ConstructResult(response.content)
+      const result = this.ConstructResult(response.content)
 
       return result;
     } catch (error) {
@@ -44,10 +48,32 @@ class describeImage {
     }
   }
 
+
+ 
+  async resizeFile(file) {
+    return new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        300,
+        300,
+        "JPEG",
+        100,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        "base64"
+      );
+    });
+  }
+  
+
   ConstructResult(text) {
     const regex = /```json\s*(.*?)\s*```/s;
+    const regex2 = /s*(.*?)\s*/s;
     // Use regex to extract the content
     const match = regex.exec(text);
+    const match2 = regex2.exec(text);
     let imageData ={
         title: "",
         description: ""
@@ -59,8 +85,14 @@ class describeImage {
       } catch (error) {
         console.error('Invalid JSON:', error);
       }
-      } else {
-      console.log('No JSON content found.');
+      } else if(match2) {
+        try {
+          imageData = JSON.parse(text);
+        } catch (error) {
+          console.error('Invalid JSON:', error);
+        }
+      }else {
+        console.log('No JSON content found.');
       }
     
     return imageData;

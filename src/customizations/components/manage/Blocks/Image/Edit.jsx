@@ -152,7 +152,7 @@ class Edit extends Component {
      readAsDataURL(file).then(async (data) => {
       const fields = data.match(/^data:(.*);(.*),(.*)$/);
 
-      const {description,title} = await describer.processImage(fields[3]);
+      const {description,title} = await describer.processImage(file);
       
       
       this.setState({ description: description, title : title}); 

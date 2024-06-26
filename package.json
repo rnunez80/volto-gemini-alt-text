@@ -48,6 +48,7 @@
   "dependencies": {
   "@langchain/core": "0.1.5",
   "@langchain/google-genai": "^0.0.20",
-  "langchain": "0.0.207"
+  "langchain": "0.0.207",
+  "react-image-file-resizer": "0.4.8"
 }
 }
