@@ -222,7 +222,7 @@ class Edit extends Component {
       const fields = data.match(/^data:(.*);(.*),(.*)$/);
 
 
-      const {description,title} = await describer.processImage(fields[3]);
+      const {description,title} = await describer.processImage(files[0]);
       this.setState({ description: description, title : title}); 
 
       this.props.createContent(
