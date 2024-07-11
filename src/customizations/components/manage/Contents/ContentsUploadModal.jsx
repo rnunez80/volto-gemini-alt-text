@@ -41,7 +41,7 @@ const messages = defineMessages({
       '{count, plural, one {Upload {count} file} other {Upload {count} files}}',
   },uploadingImage: {
     id: 'Uploading image',
-    defaultMessage: 'Uploading image and Generating description',
+    defaultMessage: 'Uploading files or Generating description',
   },
 });
 
