@@ -1,6 +1,6 @@
 {
   "name": "volto-gemini-alt-text",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "volto-gemini-alt-text: Volto add-on",
   "main": "src/index.js",
   "license": "MIT",
@@ -51,5 +51,14 @@
     "langchain": "0.0.207",
     "react-image-file-resizer": "0.4.8",
     "readable-stream": "^3.6.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rnunez80/volto-gemini-alt-text.git"
+  },
+  "author": "Daniel Nabil",
+  "bugs": {
+    "url": "https://github.com/rnunez80/volto-gemini-alt-text/issues"
+  },
+  "homepage": "https://github.com/rnunez80/volto-gemini-alt-text#readme"
 }
