@@ -46,9 +46,10 @@
     "@plone/volto": "^17.0.0"
   },
   "dependencies": {
-  "@langchain/core": "0.1.5",
-  "@langchain/google-genai": "^0.0.20",
-  "langchain": "0.0.207",
-  "react-image-file-resizer": "0.4.8"
-}
+    "@langchain/core": "0.1.5",
+    "@langchain/google-genai": "^0.0.20",
+    "langchain": "0.0.207",
+    "react-image-file-resizer": "0.4.8",
+    "readable-stream": "^3.6.0"
+  }
 }
