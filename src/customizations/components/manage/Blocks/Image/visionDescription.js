@@ -1,13 +1,12 @@
-
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { HumanMessage } from "@langchain/core/messages";
-import Resizer from "react-image-file-resizer";
+import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
+import { HumanMessage } from '@langchain/core/messages';
+import Resizer from 'react-image-file-resizer';
 
 class describeImage {
   constructor() {
     this.vision = new ChatGoogleGenerativeAI({
       apiKey:  process.env.RAZZLE_GEMINI_API_KEY,
-      modelName: "gemini-pro-vision",
+      modelName: 'gemini-1.5-flash',
       maxOutputTokens: 2048,
     });
   }
@@ -49,7 +48,6 @@ class describeImage {
   }
 
 
- 
   async resizeFile(file) {
     return new Promise((resolve) => {
       Resizer.imageFileResizer(
@@ -66,7 +64,7 @@ class describeImage {
       );
     });
   }
-  
+
 
   ConstructResult(text) {
     const regex = /```json\s*(.*?)\s*```/s;
@@ -94,7 +92,7 @@ class describeImage {
       }else {
         console.log('No JSON content found.');
       }
-    
+
     return imageData;
   }
 }
