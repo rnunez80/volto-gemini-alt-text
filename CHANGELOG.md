@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.2.1
+
+change model to 'gemini-1.5-flash', since previous model was deprecaded.
+
 <!-- You should *NOT* be adding new change log entries to this file.
      You should create a file in the news directory instead.
      For helpful instructions, please see:
