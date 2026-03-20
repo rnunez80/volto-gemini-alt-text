@@ -10,6 +10,7 @@ Add in your `.env` file of choice a variable:
 
 ```
 RAZZLE_GEMINI_API_KEY= "Your Key"
+RAZZLE_GEMINI_API_MODEL= "gemini-3.1-flash-lite-preview"
 ```
 Get an API key here: [Google](https://ai.google.dev/tutorials/setup)
 

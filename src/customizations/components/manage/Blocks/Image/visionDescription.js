@@ -1,14 +1,11 @@
-import { ChatGoogleGenerativeAI } from '@langchain/google-genai';
-import { HumanMessage } from '@langchain/core/messages';
-import Resizer from 'react-image-file-resizer';
+import { GoogleGenAI } from '@google/genai';
 
 class describeImage {
   constructor() {
-    this.vision = new ChatGoogleGenerativeAI({
+    this.ai = new GoogleGenAI({
       apiKey: process.env.RAZZLE_GEMINI_API_KEY,
-      model: 'gemini-3-flash',
-      maxOutputTokens: 2048,
     });
+    this.model = process.env.RAZZLE_GEMINI_API_MODEL;
   }
 
   /**
@@ -18,53 +15,77 @@ class describeImage {
    */
   async processImage(image) {
     try {
-      const compimage = await this.resizeFile(image);
-      const base64String = compimage.split(',')[1];
-      const input = [
-        new HumanMessage({
-          content: [
-            {
-              type: "text",
-              text: `Respond only in valid JSON. The JSON object you return should match the following schema return it as a text only:
-                {title: "string", description "string" }
-                Where title of the photo to be in it's alt and between 30-60 characters and description of the photo between 50 to 160 characters`
-            },
-            {
-              type: "image_url",
-              image_url: `data:image/png;base64,${base64String}`,
-            },
-          ],
-        }),
+      const base64String = await this.resizeFile(image);
+
+      const contents = [
+        {
+          inlineData: {
+            mimeType: 'image/jpeg',
+            data: base64String,
+          },
+        },
+        {
+          text: `Respond only in valid JSON. The JSON object you return should match the following schema return it as a text only:
+            {"title": "string", "description": "string"}
+            Where title of the photo to be used as its alt text, between 30-60 characters, and description of the photo between 50 to 160 characters.`,
+        },
       ];
 
-      const response = await this.vision.invoke(input);
-      const result = this.ConstructResult(response.content)
+      const response = await this.ai.models.generateContent({
+        model: this.model,
+        contents: contents,
+      });
 
+      const result = this.ConstructResult(response.text);
       return result;
     } catch (error) {
-      console.error("Error processing image:", error);
+      console.error('Error processing image:', error);
       throw error;
     }
   }
 
+  /**
+   * Resize an image file using the browser Canvas API.
+   * @param {File} file - The image file to resize.
+   * @returns {Promise<string>} - Base64 string (without data URL prefix).
+   */
+  resizeFile(file) {
+    return new Promise((resolve, reject) => {
+      const maxSize = 1000;
+      const reader = new FileReader();
 
-  async resizeFile(file) {
-    return new Promise((resolve) => {
-      Resizer.imageFileResizer(
-        file,
-        300,
-        300,
-        "JPEG",
-        100,
-        0,
-        (uri) => {
-          resolve(uri);
-        },
-        "base64"
-      );
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+
+          if (width > maxSize || height > maxSize) {
+            if (width > height) {
+              height = Math.round((height * maxSize) / width);
+              width = maxSize;
+            } else {
+              width = Math.round((width * maxSize) / height);
+              height = maxSize;
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Get base64 without the "data:image/jpeg;base64," prefix
+          const dataUrl = canvas.toDataURL('image/jpeg', 1.0);
+          resolve(dataUrl.split(',')[1]);
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
     });
   }
-
 
   ConstructResult(text) {
     const markdownJsonRegex = /```json\s*(.*?)\s*```/s;
@@ -74,8 +95,8 @@ class describeImage {
     const fallbackMatch = fallbackJsonRegex.exec(text);
 
     let imageData = {
-      title: "",
-      description: ""
+      title: '',
+      description: '',
     };
 
     if (markdownMatch) {
@@ -98,6 +119,5 @@ class describeImage {
     return imageData;
   }
 }
-
 
 export default describeImage;
