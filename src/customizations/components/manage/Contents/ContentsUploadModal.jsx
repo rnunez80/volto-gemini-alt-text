@@ -29,7 +29,7 @@ import { validateFileUploadSize } from '@plone/volto/helpers';
 import describeImage from "../Blocks/Image/visionDescription";
 
 const Dropzone = loadable(() => import('react-dropzone'));
-const describer = new  describeImage()
+const describer = new describeImage()
 const messages = defineMessages({
   cancel: {
     id: 'Cancel',
@@ -39,7 +39,7 @@ const messages = defineMessages({
     id: '{count, plural, one {Upload {count} file} other {Upload {count} files}}',
     defaultMessage:
       '{count, plural, one {Upload {count} file} other {Upload {count} files}}',
-  },uploadingImage: {
+  }, uploadingImage: {
     id: 'Uploading image',
     defaultMessage: 'Uploading files or Generating description',
   },
@@ -98,7 +98,7 @@ class ContentsUploadModal extends Component {
    */
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.request.loading && nextProps.request.loaded &&
-      this.state.uploading ) {
+      this.state.uploading) {
       this.setState({
         uploading: false,
       });
@@ -164,24 +164,24 @@ class ContentsUploadModal extends Component {
    * @method onSubmit
    * @returns {undefined}
    */
-  async onSubmit(){
-    this.setState({uploading: true,});
+  async onSubmit() {
+    this.setState({ uploading: true, });
     // Read all files as Data URLs
     const files = await Promise.all(this.state.files.map(file => readAsDataURL(file)));
     // Process each file and create the content data
     const contentData = await Promise.all(this.state.files.map(async (file, index) => {
       const fields = files[index].match(/^data:(.*);(.*),(.*)$/);
       const image = fields[1].split('/')[0] === 'image';
-      
+
       let description = null;
       let title = null;
       if (image) {
-        ({ description, title } = await describer.processImage(file));
+        ({ description, title } = await describer.processImage(file, this.props.rootTitle));
       }
 
       return {
         '@type': image ? 'Image' : 'File',
-        title: image? title: file.name,
+        title: image ? title : file.name,
         description: image ? description : null,
         [image ? 'image' : 'file']: {
           data: fields[3],
@@ -199,7 +199,7 @@ class ContentsUploadModal extends Component {
       SUBREQUEST,
     );
   };
-  
+
 
   /**
    * Render method.
@@ -331,22 +331,22 @@ class ContentsUploadModal extends Component {
                 aria-label={this.props.intl.formatMessage(messages.upload, {
                   count: this.state.files.length,
                 })}
-                onClick={this.onSubmit} 
+                onClick={this.onSubmit}
                 title={this.props.intl.formatMessage(messages.upload, {
                   count: this.state.files.length,
                 })}
                 size="big"
               />
             )}
-          {this.state.uploading && (
-                        <Dimmer active>
-                          <Loader indeterminate>
-                            {this.props.intl.formatMessage(
-                              messages.uploadingImage,
-                            )}
-                          </Loader>
-                        </Dimmer>
-                      )}
+            {this.state.uploading && (
+              <Dimmer active>
+                <Loader indeterminate>
+                  {this.props.intl.formatMessage(
+                    messages.uploadingImage,
+                  )}
+                </Loader>
+              </Dimmer>
+            )}
             <Button
               basic
               circular
@@ -370,6 +370,7 @@ export default compose(
   connect(
     (state) => ({
       request: state.content.subrequests?.[SUBREQUEST] || {},
+      rootTitle: state.navroot?.data?.navroot?.title,
     }),
     { createContent },
   ),

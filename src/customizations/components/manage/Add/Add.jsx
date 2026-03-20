@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { keys, isEmpty } from 'lodash';
 import { defineMessages, injectIntl } from 'react-intl';
-import { Button, Grid, Menu, Dimmer ,Loader} from 'semantic-ui-react';
+import { Button, Grid, Menu, Dimmer, Loader } from 'semantic-ui-react';
 import { Portal } from 'react-portal';
 import { v4 as uuid } from 'uuid';
 import qs from 'query-string';
@@ -53,7 +53,7 @@ import clearSVG from '@plone/volto/icons/clear.svg';
 
 import describeImage from "../Blocks/Image/visionDescription";
 
-const describer = new  describeImage()
+const describer = new describeImage()
 
 const messages = defineMessages({
   add: {
@@ -79,10 +79,10 @@ const messages = defineMessages({
   someErrors: {
     id: 'There are some errors.',
     defaultMessage: 'There are some errors.',
-  },uploadingImage: {
+  }, uploadingImage: {
     id: 'Uploading image',
     defaultMessage: 'Uploading image and Generating description',
-  },uploading: {
+  }, uploading: {
     id: 'Uploading',
     defaultMessage: 'Uploading...',
   }
@@ -185,7 +185,7 @@ class Add extends Component {
         uploadingImage: false,
         uploading: false
       });
-      
+
     }
 
     if (this.props.createRequest.loading && nextProps.createRequest.error) {
@@ -233,18 +233,18 @@ class Add extends Component {
    * @returns {undefined}
    */
   async onSubmit(data) {
-    this.setState({uploading: true,});
+    this.setState({ uploading: true, });
 
     const image = data.image
-    if(image){
-    this.setState({uploadingImage : true,});
-    this.setState({uploading: false,});
-    const imageData = image.data
-    const imagefile = await this.base64ToBlob(imageData)
-    let description,title; 
-    ({ description, title } = await describer.processImage(imagefile));
-    data.title = title
-    data.description = description
+    if (image) {
+      this.setState({ uploadingImage: true, });
+      this.setState({ uploading: false, });
+      const imageData = image.data
+      const imagefile = await this.base64ToBlob(imageData)
+      let description, title;
+      ({ description, title } = await describer.processImage(imagefile, this.props.rootTitle));
+      data.title = title
+      data.description = description
     }
 
     this.props.createContent(getBaseUrl(this.props.pathname), {
@@ -255,23 +255,23 @@ class Add extends Component {
       '@type': this.props.type,
       ...(config.settings.isMultilingual &&
         this.props.location?.state?.translationOf && {
-          translation_of: this.props.location.state.translationOf,
-          language: this.props.location.state.language,
-        }),
+        translation_of: this.props.location.state.translationOf,
+        language: this.props.location.state.language,
+      }),
     });
   }
   base64ToBlob(base64) {
     // Remove the base64 metadata if it exists
     const byteCharacters = atob(base64);
     const byteNumbers = new Array(byteCharacters.length);
-  
+
     for (let i = 0; i < byteCharacters.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
-  
+
     const byteArray = new Uint8Array(byteNumbers);
-    const  imageBlob = new Blob([byteArray], { type: 'image/png' });
-    return new File([imageBlob], 'image.png', { type: 'image/png'});
+    const imageBlob = new Blob([byteArray], { type: 'image/png' });
+    return new File([imageBlob], 'image.png', { type: 'image/png' });
   }
 
   /**
@@ -429,8 +429,8 @@ class Add extends Component {
             title={
               this.props?.schema?.title
                 ? this.props.intl.formatMessage(messages.add, {
-                    type: this.props.schema.title,
-                  })
+                  type: this.props.schema.title,
+                })
                 : null
             }
             loading={this.props.createRequest.loading}
@@ -561,6 +561,7 @@ export default compose(
       pathname: props.location.pathname,
       returnUrl: qs.parse(props.location.search).return_url,
       type: qs.parse(props.location.search).type,
+      rootTitle: state.navroot?.data?.navroot?.title,
     }),
     { createContent, getSchema, changeLanguage, setFormData },
   ),

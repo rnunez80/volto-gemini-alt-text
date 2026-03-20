@@ -11,9 +11,10 @@ class describeImage {
   /**
    * Describe an image using Google Generative AI.
    * @param {File} image - The image file object.
+   * @param {string} [siteTitle] - Optional site/navroot title for context.
    * @returns {Promise<{title: string, description: string}>} - A promise resolving to the description of the image.
    */
-  async processImage(image) {
+  async processImage(image, siteTitle) {
     try {
       const base64String = await this.resizeFile(image);
 
@@ -25,7 +26,7 @@ class describeImage {
           },
         },
         {
-          text: `Respond only in valid JSON. The JSON object you return should match the following schema return it as a text only:
+          text: `${siteTitle ? `This image is being uploaded to the "${siteTitle}" webpage. Use this context to generate more relevant alt text. ` : ''}Respond only in valid JSON. The JSON object you return should match the following schema return it as a text only:
             {"title": "string", "description": "string"}
             Where title of the photo to be used as its alt text, between 30-60 characters, and description of the photo between 50 to 160 characters.`,
         },

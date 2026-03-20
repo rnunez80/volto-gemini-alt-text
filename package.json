@@ -1,6 +1,6 @@
 {
   "name": "volto-gemini-alt-text",
-  "version": "0.3.0",
+  "version": "0.2.1",
   "description": "volto-gemini-alt-text: Volto add-on",
   "main": "src/index.js",
   "license": "MIT",
@@ -46,7 +46,11 @@
     "@plone/volto": "^17.0.0"
   },
   "dependencies": {
-    "@google/genai": "^1.0.0"
+    "@langchain/core": "^1.1.17",
+    "@langchain/google-genai": "^2.1.13",
+    "langchain": "^1.2.15",
+    "react-image-file-resizer": "^0.4.8",
+    "readable-stream": "^3.6.0"
   },
   "repository": {
     "type": "git",

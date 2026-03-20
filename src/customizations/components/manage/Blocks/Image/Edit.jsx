@@ -44,7 +44,7 @@ const messages = defineMessages({
     defaultMessage: 'Uploading image and Generating description',
   },
 });
-const describer = new  describeImage()
+const describer = new describeImage()
 /**
  * Edit image block class.
  * @class Edit
@@ -81,11 +81,11 @@ class Edit extends Component {
     uploading: false,
     url: '',
     dragging: false,
-    description:'',
-    title:''
+    description: '',
+    title: ''
   };
-  
-  
+
+
 
 
 
@@ -129,7 +129,7 @@ class Edit extends Component {
       !isEqual(this.props.data, nextProps.data)
     );
   }
-  
+
 
   /**
    * Upload image handler (not used), but useful in case that we want a button
@@ -139,25 +139,25 @@ class Edit extends Component {
    */
   onUploadImage = (e) => {
     e.stopPropagation();
-    
+
     const file = e.target.files[0];
     if (!validateFileUploadSize(file, this.props.intl.formatMessage)) return;
     this.setState({
       uploading: true,
     });
-    
 
-    
-    
-     readAsDataURL(file).then(async (data) => {
+
+
+
+    readAsDataURL(file).then(async (data) => {
       const fields = data.match(/^data:(.*);(.*),(.*)$/);
 
-      const {description,title} = await describer.processImage(file);
-      
-      
-      this.setState({ description: description, title : title}); 
-  
-  
+      const { description, title } = await describer.processImage(file, this.props.rootTitle);
+
+
+      this.setState({ description: description, title: title });
+
+
 
       this.props.createContent(
         getBaseUrl(this.props.pathname),
@@ -175,9 +175,9 @@ class Edit extends Component {
         this.props.block,
       );
     });
-    
+
   };
-  
+
   /**
    * Change url handler
    * @method onChangeUrl
@@ -222,8 +222,8 @@ class Edit extends Component {
       const fields = data.match(/^data:(.*);(.*),(.*)$/);
 
 
-      const {description,title} = await describer.processImage(files[0]);
-      this.setState({ description: description, title : title}); 
+      const { description, title } = await describer.processImage(files[0], this.props.rootTitle);
+      this.setState({ description: description, title: title });
 
       this.props.createContent(
         getBaseUrl(this.props.pathname),
@@ -281,7 +281,7 @@ class Edit extends Component {
     const { data } = this.props;
     const placeholder =
       this.props.data.placeholder ||
-      this.props.intl.formatMessage(messages.ImageBlockInputPlaceholder); 
+      this.props.intl.formatMessage(messages.ImageBlockInputPlaceholder);
 
     return (
       <div
@@ -304,17 +304,17 @@ class Edit extends Component {
             item={
               data.image_scales
                 ? {
-                    '@id': data.url,
-                    image_field: data.image_field,
-                    image_scales: data.image_scales,
-                  }
+                  '@id': data.url,
+                  image_field: data.image_field,
+                  image_scales: data.image_scales,
+                }
                 : undefined
             }
             src={
               data.image_scales
                 ? undefined
                 : isInternalURL(data.url)
-                ? // Backwards compat in the case that the block is storing the full server URL
+                  ? // Backwards compat in the case that the block is storing the full server URL
                   (() => {
                     if (data.size === 'l')
                       return `${flattenToAppURL(data.url)}/@@images/image`;
@@ -326,7 +326,7 @@ class Edit extends Component {
                       return `${flattenToAppURL(data.url)}/@@images/image/mini`;
                     return `${flattenToAppURL(data.url)}/@@images/image`;
                   })()
-                : data.url
+                  : data.url
             }
             sizes={config.blocks.blocksConfig.image.getSizes(data)}
             alt={data.alt || ''}
@@ -460,6 +460,7 @@ export default compose(
     (state, ownProps) => ({
       request: state.content.subrequests[ownProps.block] || {},
       content: state.content.subrequests[ownProps.block]?.data,
+      rootTitle: state.navroot?.data?.navroot?.title,
     }),
     { createContent },
   ),
